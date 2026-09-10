@@ -25,28 +25,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Validate Supabase secrets
+        id: validate_secrets
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️ Required Supabase secrets are missing. Skipping migrations."
+          else
+            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Supabase CLI
+        if: steps.validate_secrets.outputs.has_secrets == 'true'
         uses: supabase/setup-cli@v1
         with:
           version: latest
 
       - name: Link Supabase project
+        if: steps.validate_secrets.outputs.has_secrets == 'true'
         run: |
           supabase link \
             --project-ref "$SUPABASE_PROJECT_ID" \
             --password "$SUPABASE_DB_PASSWORD"
 
       - name: Push database migrations
+        if: steps.validate_secrets.outputs.has_secrets == 'true'
         run: |
           supabase db push \
             --password "$SUPABASE_DB_PASSWORD"
 
+      - name: Migration skipped
+        if: steps.validate_secrets.outputs.has_secrets != 'true'
+        run: echo "ℹ️ Migration step skipped because required Supabase secrets are not configured."
+
       - name: Migration succeeded
-        if: success()
+        if: success() && steps.validate_secrets.outputs.has_secrets == 'true'
         run: echo "✅ Migrations applied to project $SUPABASE_PROJECT_ID"
 
       - name: Migration failed
-        if: failure()
+        if: failure() && steps.validate_secrets.outputs.has_secrets == 'true'
         run: |
           echo "❌ Migration failed — check logs above."
           echo "Common causes:"
