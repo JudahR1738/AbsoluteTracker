@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer theme, base, components, utilokities;
+
+@layer theme {
+    :root{
+        --color-forest-950: #070f0a;
+        --color-forest-900: #0d2818;
+        --color-forest-800: #133520;
+        --color-forest-700: #1a4429;
+        --color-forest-600: #215433;
+        --color-forest-500: #2d7a47;
+        --color-forest-400: #4ade80;
+        --color-forest-300: #86efac;
+        --color-forest-200: #bbf7d0;
+        --color-forest-100: #dcfce7;
+    }
+  
+}
