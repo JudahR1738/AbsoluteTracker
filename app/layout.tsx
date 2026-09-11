@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
-import "@/app/globals.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "StarterApp",
-    template: "%s | StarterApp",
+    default: "AbsoluteTracker",
+    template: "AbsoluteTracker - %s",
   },
-  description: "A Next.js + Supabase starter application with authentication.",
+  description: "A Graphic Novel Collection Website.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
