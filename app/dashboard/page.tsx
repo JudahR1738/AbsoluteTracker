@@ -5,12 +5,15 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { getInitials } from "@/lib/utils";
 import { Profile } from "@/lib/supabase/types";
+import { getUserComics } from "@/lib/queries/comics";
+import { AddComicForm } from "@/components/comics/AddComicForm";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
   const user = await requireUser();
   const profile = await getUserProfile() as Profile | null;
+  const comics = await getUserComics();
 
   const displayName = profile?.full_name ?? user.email ?? "User";
   const initials = getInitials(displayName);
@@ -24,7 +27,6 @@ export default async function DashboardPage() {
             Welcome back, <span className="text-zinc-300 font-medium">{profile?.full_name ?? user.email}</span>
           </p>
         </div>
-        <SignOutButton />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -81,6 +83,18 @@ export default async function DashboardPage() {
             </li>
           </ul>
         </Card>
+        <AddComicForm />
+
+        <main className="mx-auto max-w-6xl">
+          {/* Placeholder count check before wiring ComicCard */}
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center text-sm text-slate-400">
+            {comics.length === 0 ? (
+              <p>Your collection is empty. Click <strong>Add Comic</strong> above to create your first entry.</p>
+            ) : (
+              <p>Database has <strong>{comics.length}</strong> items ready for presentation.</p>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
