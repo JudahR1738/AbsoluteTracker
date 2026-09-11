@@ -1,31 +1,44 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { Profile } from "@/lib/supabase/types"
+
+export const metadata: Metadata = { title: "My Collection" };
 
 export default async function HomePage() {
   const user = await getUser();
 
+  let profile: Profile | null = null;
+  if (user) {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    profile = data;
+  }
+
+  // In-case of no name data use basic name
+  const displayName = 
+    profile?.full_name ||
+    "Collector";
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
       <div className="text-center max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 text-sm font-medium text-[#4ade80] bg-[#215433] px-3 py-1 rounded-full mb-6 border border-[#2d7a47;]">
-          <span className="w-1.5 h-1.5 bg-[#4ade80] rounded-full"></span>
-          Next.js + Supabase Starter
-        </div>
 
         <h1 className="text-5xl font-bold text-zinc-100 mb-4 leading-tight">
-          Welcome to QuickStarter!<br/>Let's get,{" "}
-          <span className="text-[#2d7a47]">started!</span>
+          Welcome <span className="text-forest-500">{displayName}</span>, to Your <span className="text-6xl font-sedgwick text-forest-500">Absolute</span> Collection!<br/>
         </h1>
-
-        <p className="text-xl text-zinc-500 mb-10 leading-relaxed">
-          This starter has authentication, database, file storage, and CI/CD functionality.
-        </p>
 
         {user ? (
           <div className="flex flex-col items-center gap-4">
-            <p className="text-sm text-green-400 bg-green-950/50 px-4 py-2 rounded-full border border-green-900">
-              Signed in as <strong>{user.email}</strong>
-            </p>
+            {/* <p className="text-sm text-green-400 bg-green-950/50 px-4 py-2 rounded-full border border-green-900">
+              Signed in as <strong>{displayName}</strong>
+            </p> */}
             <div className="flex gap-3">
               <Link href="/dashboard" className="bg-[#40c671] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#2d7a47] transition-colors">
                 Go to Dashboard →

@@ -9,8 +9,8 @@ export async function Navbar() {
     <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm sticky top-0 z-40">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-lg font-semibold text-[#2d7a47] hover:text-[#40c671] transition-colors">
-            QuickStarter
+          <Link href="/" className="text-3xl font-sedgwick font-semibold text-[#2d7a47] hover:text-[#40c671] transition-colors">
+            AbsoluteTracker
           </Link>
 
           <div className="flex items-center gap-2">

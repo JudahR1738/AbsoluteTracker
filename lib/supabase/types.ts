@@ -262,3 +262,5 @@ export const Constants = {
   },
 } as const
 
+export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+export type Comic = Database["public"]["Tables"]["comics"]["Row"];
